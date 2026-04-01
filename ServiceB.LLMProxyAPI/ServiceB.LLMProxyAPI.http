@@ -1,0 +1,6 @@
+@ServiceB.LLMProxyAPI_HostAddress = http://localhost:5193
+
+GET {{ServiceB.LLMProxyAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,6 @@
+@ServiceA.ContentAPI_HostAddress = http://localhost:5282
+
+GET {{ServiceA.ContentAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
