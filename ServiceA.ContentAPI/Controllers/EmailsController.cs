@@ -1,6 +1,16 @@
-﻿namespace ServiceA.ContentAPI.Controllers
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace ServiceA.ContentAPI.Controllers
 {
-    public class EmailsController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class EmailsController :ControllerBase
     {
+        [HttpGet]
+        public IActionResult Test()
+        {
+            return Ok("Service A working");
+        }
+
     }
 }
