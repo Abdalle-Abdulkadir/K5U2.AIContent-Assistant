@@ -10,5 +10,6 @@ namespace ServiceA.ContentApI.Services
         Task<EmailResponseDto> CreateAsync(CreateEmailRequestDto dto);
         Task UpdateAsync(int id, UpdateEmailRequestDto dto);
         Task DeleteAsync(int id);
+        Task<string> SendToServiceBAsync(string conetnt);
     }
 }
