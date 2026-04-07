@@ -55,5 +55,13 @@ namespace ServiceA.ContentAPI.Controllers
             await _emailService.DeleteAsync(id);
             return NoContent();
         }
+
+
+        [HttpPost("generate")]
+        public async Task<IActionResult> Generate(string conetnt)
+        {
+            var result = await _emailService.SendToServiceBAsync(conetnt);
+            return Ok(result);
+        }
     }
 }
