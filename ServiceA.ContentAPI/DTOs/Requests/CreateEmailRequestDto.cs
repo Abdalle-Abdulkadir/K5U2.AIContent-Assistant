@@ -1,9 +1,20 @@
-﻿namespace ServiceA.ContentApI.DTOs.Requests
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ServiceA.ContentApI.DTOs.Requests
 {
     public class CreateEmailRequestDto
     {
-        public string To { get; set; }
+        [Required]
+        [StringLength(100)]
         public string Subject { get; set; }
-        public string Body { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string Tone { get; set; }
+
+        [Required]
+        [StringLength(1000)]
+        public string Content { get; set; }
+
     }
 }

@@ -22,9 +22,9 @@ namespace ServiceA.ContentApI.Services
             return emails.Select(e => new EmailResponseDto
             {
                 Id = e.Id,
-                To = e.To,
                 Subject = e.Subject,
-                Body = e.Body
+                Tone = e.Tone,
+                Content = e.Content
             });
         }
 
@@ -37,9 +37,9 @@ namespace ServiceA.ContentApI.Services
             return new EmailResponseDto
             {
                 Id = email.Id,
-                To = email.To,
+                Tone = email.Tone,
                 Subject = email.Subject,
-                Body = email.Body
+                Content = email.Content
             };
         }
 
@@ -47,9 +47,9 @@ namespace ServiceA.ContentApI.Services
         {
             var email = new EmailRequest
             {
-                To = dto.To,
                 Subject = dto.Subject,
-                Body = dto.Body
+                Tone = dto.Tone,
+                Content = dto.Content
             };
 
             var created = await _repository.CreateAsync(email);
@@ -57,9 +57,9 @@ namespace ServiceA.ContentApI.Services
             return new EmailResponseDto
             {
                 Id = created.Id,
-                To = created.To,
                 Subject = created.Subject,
-                Body = created.Body
+                Tone = created.Tone,
+                Content = created.Content
             };
         }
 
@@ -68,9 +68,9 @@ namespace ServiceA.ContentApI.Services
             var email = await _repository.GetByIdAsync(id);
             if (email == null) return;
 
-            email.To = dto.To;
             email.Subject = dto.Subject;
-            email.Body = dto.Body;
+            email.Tone = dto.Tone;
+            email.Content = dto.Content;
 
             await _repository.UpdateAsync(email);
         }
