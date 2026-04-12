@@ -55,13 +55,12 @@ Service A communicates with Service B using:
 
 ##  Example Request
 
-```json
 {
   "subject": "Test",
   "tone": "Friendly",
   "content": "Write a greeting email"
 }
-
+ 
 ##  Example Response
 Hej,
 Jag ville bara höra hur du har det och tacka för allt stöd du har gett mig.
