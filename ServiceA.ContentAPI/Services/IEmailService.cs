@@ -5,11 +5,11 @@ namespace ServiceA.ContentApI.Services
 {
     public interface IEmailService
     {
-        Task<IEnumerable<EmailResponseDto>> GetAllAsync();
+        Task<IEnumerable<EmailResponseDto>> GetAllAsync(string? subject);
         Task<EmailResponseDto?> GetByIdAsync(int id);
         Task<EmailResponseDto> CreateAsync(CreateEmailRequestDto dto);
-        Task UpdateAsync(int id, UpdateEmailRequestDto dto);
-        Task DeleteAsync(int id);
-        Task<string> SendToServiceBAsync(string conetnt);
+        Task<bool> UpdateAsync(int id, UpdateEmailRequestDto dto);
+        Task<bool> DeleteAsync(int id);
+        Task<string> SendToServiceBAsync(CreateEmailRequestDto dto);
     }
 }
