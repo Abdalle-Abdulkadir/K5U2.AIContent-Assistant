@@ -14,10 +14,18 @@ namespace ServiceA.ContentApI.Repositorries
             _context = context;
         }
 
-        public async Task<IEnumerable<EmailRequest>> GetAllAsync()
+        public async Task<IEnumerable<EmailRequest>> GetAllAsync(string? subject)
         {
-            return await _context.EmailRequests.ToListAsync();
+            var query = _context.EmailRequests.AsQueryable();
+
+            if (!string.IsNullOrEmpty(subject))
+            {
+                query = query.Where(e => e.Subject.Contains(subject));
+            }
+
+            return await query.ToListAsync();
         }
+
 
         public async Task<EmailRequest?> GetByIdAsync(int id)
         {

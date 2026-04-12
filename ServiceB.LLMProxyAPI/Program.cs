@@ -1,3 +1,5 @@
+using ServiceB.LLMProxyAPI.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient<LlmService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:11434");
+});
+
 
 builder.Services.AddOpenApi();
 

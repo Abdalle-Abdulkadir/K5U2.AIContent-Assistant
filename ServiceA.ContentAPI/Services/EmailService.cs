@@ -1,8 +1,10 @@
-﻿using ServiceA.ContentApI.DTOs.Requests;
+﻿using ServiceA.ContentApi.Clients;
+using ServiceA.ContentApI.DTOs.Requests;
 using ServiceA.ContentApI.DTOs.Responses;
 using ServiceA.ContentApI.Models;
 using ServiceA.ContentApI.Repositorries;
 using System.Linq;
+
 
 namespace ServiceA.ContentApI.Services
 {
@@ -10,17 +12,17 @@ namespace ServiceA.ContentApI.Services
     public class EmailService : IEmailService
     {
         private readonly IEmailRepository _repository;
-        private readonly HttpClient _httpClient;
+        private readonly LlmProxyClient _llmClient;
 
-        public EmailService(IEmailRepository repository, HttpClient httpClient)
+        public EmailService(IEmailRepository repository, LlmProxyClient llmClient)
         {
             _repository = repository;
-            _httpClient = httpClient;
+            _llmClient = llmClient;
         }
         // Metod för att hämta alla email requests
-        public async Task<IEnumerable<EmailResponseDto>> GetAllAsync()
+        public async Task<IEnumerable<EmailResponseDto>> GetAllAsync(string? subject)
         {
-            var emails = await _repository.GetAllAsync();
+            var emails = await _repository.GetAllAsync(subject);
 
             return emails.Select(e => new EmailResponseDto
             {
@@ -66,35 +68,42 @@ namespace ServiceA.ContentApI.Services
             };
         }
         // Metod för att uppdatera en email request
-        public async Task UpdateAsync(int id, UpdateEmailRequestDto dto)
+        public async Task<bool> UpdateAsync(int id, UpdateEmailRequestDto dto)
         {
             var email = await _repository.GetByIdAsync(id);
-            if (email == null) return;
+
+            if (email == null) return false;
 
             email.Subject = dto.Subject;
             email.Tone = dto.Tone;
             email.Content = dto.Content;
 
             await _repository.UpdateAsync(email);
+
+            return true;
         }
+
+
+
         // Metod för att radera en email request
-        public async Task DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
+            var email = await _repository.GetByIdAsync(id);
+
+            if (email == null) return false;
+
             await _repository.DeleteAsync(id);
+
+            return true;
         }
+
 
         // Metod för att skicka data till Service B
-        public async Task<string> SendToServiceBAsync(string content)
+        public async Task<string> SendToServiceBAsync(CreateEmailRequestDto dto)
         {
-            var response = await _httpClient.PostAsJsonAsync(
-                "https://localhost:7123/api/LLM", 
-                new { text = content }
-            );
+            var response = await _llmClient.GenerateEmailAsync(dto);
+            return response;
 
-            return await response.Content.ReadAsStringAsync();
         }
-
     }
-
 }
-
