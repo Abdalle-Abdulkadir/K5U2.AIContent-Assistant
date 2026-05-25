@@ -6,10 +6,12 @@ namespace ServiceB.LLMProxyAPI.Services
     public class LlmService
     {
         private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
 
-        public LlmService(HttpClient httpClient)
+        public LlmService(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
+            _configuration = configuration;
         }
 
         public async Task<string> GenerateAsync(string content)
@@ -31,29 +33,47 @@ namespace ServiceB.LLMProxyAPI.Services
 
             var requestBody = new
             {
-                model = "llama3",
-                prompt = prompt,
-                stream = false,
-                options = new
-                {
-                    num_predict = 150
-                }
+                model = "gpt-4.1-mini",
+                input = prompt
             };
 
-            var response = await _httpClient.PostAsJsonAsync("/api/generate", requestBody);
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer",
+                    _configuration["OpenAI:ApiKey"]);  
+
+
+
+            var response = await _httpClient.PostAsJsonAsync("responses", requestBody);
 
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadAsStringAsync();
-                return $"Error: {error}";
+                return $"AI request failed. Status: {(int)response.StatusCode}. Message: {error}";
             }
 
             var json = await response.Content.ReadAsStringAsync();
 
-            using var doc = System.Text.Json.JsonDocument.Parse(json);
-            var result = doc.RootElement.GetProperty("response").GetString();
+            string? result;
+            try
+            {
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+                result = doc.RootElement
+                    .GetProperty("output")[0]
+                    .GetProperty("content")[0]
+                    .GetProperty("text")
+                    .GetString();
+            }
+            catch
+            {
+                return "AI returned an unexpected response format";
+            }
 
-            return result ?? "No response";
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                return "AI returned an empty response.";
+            }
+            return result;
         }
     }
 }

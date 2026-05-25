@@ -36,6 +36,7 @@ builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 builder.Services.AddHttpClient<LlmProxyClient>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7123");
+    client.Timeout = TimeSpan.FromSeconds(30);
 });
 
 builder.Services.AddScoped<IEmailService, EmailService>();
