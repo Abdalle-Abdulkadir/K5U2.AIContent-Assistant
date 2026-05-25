@@ -1,9 +1,9 @@
-name: CI Build Check
+name: ci build check
 
 on:
   pull_request:
     branches:
-      - dev
+      - Dev
       - main
 
 jobs:
