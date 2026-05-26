@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using ServiceA.ContentApI.DTOs.Requests;
 using ServiceA.ContentApI.Services;
 
@@ -86,6 +87,7 @@ namespace ServiceA.ContentAPI.Controllers
         /// Generate AI email via Service B
         /// </summary>
         [HttpPost("generate")]
+        [EnableRateLimiting("ai-limit")]
         public async Task<IActionResult> Generate(CreateEmailRequestDto dto)
         {
             var result = await _emailService.SendToServiceBAsync(dto);
