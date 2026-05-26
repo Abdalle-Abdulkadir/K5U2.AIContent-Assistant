@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Scalar.AspNetCore;
@@ -7,6 +8,8 @@ using ServiceA.ContentApi.Data;
 using ServiceA.ContentApi.Filters;
 using ServiceA.ContentApI.Repositorries;
 using ServiceA.ContentApI.Services;
+using System.Threading.RateLimiting;
+
 
 
 
@@ -27,6 +30,18 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = 429;
+
+    options.AddSlidingWindowLimiter("ai-limit", limiterOptions =>
+    {
+        limiterOptions.PermitLimit = 1;
+        limiterOptions.Window = TimeSpan.FromSeconds(30);
+        limiterOptions.SegmentsPerWindow = 6;
+        limiterOptions.QueueLimit = 0;
+    });
+});
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -59,6 +74,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseRateLimiter();
 
 app.UseAuthorization();
 
