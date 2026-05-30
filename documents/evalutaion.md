@@ -36,6 +36,7 @@ The quality of generated content depends on the prompt provided. Responses may v
 - Write an email to postpone a meeting until next Wednesday.
 - Write an email requesting to change a flight ticket to next week.
 
+All test prompts were executed through the /api/Emails/generate endpoint and returned HTTP 200 OK responses.
 
 ## Results
 
